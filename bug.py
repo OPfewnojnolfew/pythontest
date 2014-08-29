@@ -21,7 +21,7 @@ class BugMine:
         self.login()
         bugPage=self.opener.open(self.bugUrl).read().decode("utf-8")
         print(bugPage)
-        myItems = re.findall("<td.*?class='a-left nobr'>(.*?)</td>",bugPage,re.S)    
+        myItems = re.findall("<td\s+class='a-left\s+nobr'><a\s+href='(.*)'\s*>[\s\S]*</a></td>",bugPage,re.S)    
         items=[]
         for item in myItems:
             items.append(item)
