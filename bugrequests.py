@@ -1,31 +1,60 @@
+"""bugrequests"""
 import requests
-from bs4 import BeautifulSoup
+import re
 
-########################################################################
+#
+
+
 class BugMine:
-    headers={'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.94 Safari/537.36'}
-    #----------------------------------------------------------------------
-    def __init__(self,param):
-        self.loginUrl=param['loginUrl']
-        self.loginParams=param['loginParams']
-        self.bugUrl=param['bugUrl']
-        self.requestHander=requests.session()
-        self.login()
-    def login(self):
-        self.requestHander.post(self.loginUrl,self.loginParams,headers=BugMine.headers);
-    def getMyBug(self):
-        req=self.requestHander.get(self.bugUrl,headers=BugMine.headers)
-        req.encoding = 'utf-8'
-        soup=BeautifulSoup(req.text)
-        print(soup.prettify())
-        soupItems= soup.find_all("p", class_="a-left nobr")
 
-        items=[]
-        for item in items:
-            items.append(item.get('href'))
-bugMine=BugMine({
-    'loginUrl':'http://192.168.60.251/zentaopms/www/index.php?m=user&f=login',
-    'bugUrl':'http://192.168.60.251/zentaopms/www/index.php?m=my&f=bug&type=assignedTo',
-    'loginParams':{'account':'pangtengfei','password':'123456', 'referer':''}
+    """BugMine"""
+    headers = {
+        'User-Agent': '''Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36
+         (KHTML, like Gecko) Chrome/37.0.2062.94 Safari/537.36'''}
+    #----------------------------------------------------------------------
+
+    def __init__(self, param):
+        self.login_url = param['login_url']
+        self.login_params = param['login_params']
+        self.bug_url = param['bug_url']
+        self.request_hander = requests.session()
+        self.login()
+
+    def login(self):
+        """login"""
+        self.request_hander.post(
+            self.login_url, self.login_params, headers=BugMine.headers)
+
+    def mybug(self):
+        """mybug"""
+        req = self.request_hander.get(self.bug_url, headers=BugMine.headers)
+        req.encoding = 'utf-8'
+        myitems = re.findall('''<td\s+class='a-left\s+nobr'>
+            [\s\n]*?<a\s+href='(.*?)'\s*>[\s\S]*?</a>[\s\n]*?</td>''', req.text, re.S)
+        for item in myitems:
+            self.mybug_detail(item)
+
+    def mybug_detail(self, url):
+        """mybug_detail"""
+        req = self.request_hander.get(
+            'http://192.168.60.251' + url, headers=BugMine.headers)
+        req.encoding = 'utf-8'
+        # print(req.text)
+        detail_title = re.findall(
+            "<div\s+id='titlebar'\s*>[\s\n]*?<div\s+id='main'\s*>([\s\S]*?)</div>", req.text, re.S)
+        detail_content = re.findall(
+            "<div\s+class='content'\s*>([\s\S]*?)</div>", req.text, re.S)
+        print(detail_title)
+        for item in detail_content:
+            print(item.replace('<[^>]*>', ''))
+
+BugMine = BugMine({
+    'login_url': '''http://192.168.60.251/zentaopms/www/index.php
+                ?m=user&f=login''',
+    'bug_url': '''http://192.168.60.251/zentaopms/www/index.php
+                ?m=my&f=bug&type=assignedTo''',
+    'login_params': {'account': 'pangtengfei',
+                     'password': '123456',
+                     'referer': ''}
 })
-print(bugMine.getMyBug())
+bugMine.mybug()

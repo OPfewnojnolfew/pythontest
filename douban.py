@@ -1,11 +1,13 @@
 import urllib.request as ur
-import json,os,sys
+import json
+import os
+import sys
 os.chdir(sys.path[0])
 
-t=r'http://douban.fm/j/mine/playlist?type=n&channel='
+t = r'http://douban.fm/j/mine/playlist?type=n&channel='
 
 for i in range(24):
-    url=t+str(i)
+    url = t + str(i)
     print(url)
     a=ur.urlopen(url).read().decode().replace('\\','')
     a=json.loads(a)
