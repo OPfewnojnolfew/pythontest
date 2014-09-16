@@ -29,9 +29,10 @@ class BugMine:
         """mybug"""
         req = self.request_hander.get(self.bug_url, headers=BugMine.headers)
         req.encoding = 'utf-8'
-        myitems = re.findall('<td\s+class="a-left\s+nobr">[\s\n]*?'\
-            '<a\s+href="(.*?)"\s*>[\s\S]*?</a>[\s\n]*?'\
-            '</td>', req.text, re.S)
+        myitems = re.findall(r"<td\s+class='a-left\s+nobr'>[\s\n]*?"\
+            r"<a\s+href='(.*?)'\s*>[\s\S]*?</a>[\s\n]*?"\
+            "</td>", req.text, re.S)
+        print(myitems)
         for item in myitems:
             self.mybug_detail(item)
 
@@ -40,16 +41,17 @@ class BugMine:
         req = self.request_hander.get(
             'http://192.168.60.251' + url, headers=BugMine.headers)
         req.encoding = 'utf-8'
-        # print(req.text)
-        detail_title = re.findall('<div\s+id="titlebar"\s*>[\s\n]*?'\
-            '<div\s+id="main"\s*>([\s\S]*?)</div>', req.text, re.S)
-        detail_content = re.findall('<div\s+class="content"\s*>([\s\S]*?)'\
-            '</div>', req.text, re.S)
+        detail_title = re.findall(r"<div\s+id='titlebar'\s*>[\s\n]*?"\
+            r"<div\s+id='main'\s*>([\s\S]*?)</div>", req.text, re.S)
+        detail_content = re.findall(r"<div\s+class='content'\s*>([\s\S]*?)"\
+            "</div>", req.text, re.S)
         print(detail_title)
         for item in detail_content:
             print(item.replace('<[^>]*>', ''))
 
-BUGMINE = BugMine({
+# pylint: disable-msg=C0103
+
+BUGMINe = BugMine({
     'login_url': '''http://192.168.60.251/zentaopms/www/index.php
                 ?m=user&f=login''',
     'bug_url': '''http://192.168.60.251/zentaopms/www/index.php
@@ -58,4 +60,4 @@ BUGMINE = BugMine({
                      'password': '123456',
                      'referer': ''}
 })
-BUGMINE.mybug()
+BUGMINe.mybug()
