@@ -4,7 +4,7 @@ import _thread
 import time
 
 
-#----------- 加载处理糗事百科 -----------
+#----------- 加载处理糗事百科ACE -----------
 class Spider_Model:
 
     def __init__(self):
