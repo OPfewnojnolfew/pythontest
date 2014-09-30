@@ -1,4 +1,3 @@
-# pylint: disable=C0103
 """bugrequests"""
 import requests
 import re
@@ -49,7 +48,7 @@ class BugMine:
         print(detail_title)
         for item in detail_content:
             print(item.replace('<[^>]*>', ''))
-
+# pylint: disable=C0103
 bug_mine = BugMine({
     'login_url': '''http://192.168.60.251/zentaopms/www/index.php
                 ?m=user&f=login''',
