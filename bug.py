@@ -36,4 +36,5 @@ bugMine = BugMine({
     'bugUrl': 'http://192.168.60.251/zentaopms/www/index.php?m=my&f=bug&type=assignedTo',
     'loginParams': {'account': 'pangtengfei', 'password': '123456', 'referer': ''}
 })
+
 print(bugMine.getMyBug())
